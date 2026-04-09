@@ -2,11 +2,11 @@
 # https://telar.org
 
 # Site Settings
-title: "Telar"
-description: "Telar (Spanish for 'loom') is a static site generator built on Jekyll that weaves together IIIF images, text, and layered contextual information into interactive digital narrative exhibitions. <a href='https://github.com/UCSB-AMPLab/telar'>Telar</a> is a project of <a href='https://neogranadina.org'>Neogranadina</a>, the <a href='https://ampl.clair.ucsb.edu/'>UCSB Archives, Memory, and Preservation Lab</a>, and the <a href='https://liberalarts.utexas.edu/history/'>UT Archives, Mapping, and Pedagogy Lab</a>."
+title: "Andean Carved Tenon Head"
+description: ""
 url: "https://jordansuleman.github.io"
 baseurl: "/carvedtenonhead"
-author: ""
+author: "Jordan, Tanner, Elise"
 email: ""
 telar_theme: "trama" # Options: trama, paisajes, neogranadina, santa-barbara, austin, or custom
 logo: ""
@@ -156,3 +156,4 @@ development-features:
   # Use this when building a site with only custom pages (no stories or objects)
   # (Backward compatible: hide_collections also supported)
   skip_collections: false
+story_key: test
