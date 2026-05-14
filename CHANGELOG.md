@@ -2,6 +2,119 @@
 
 All notable changes to Telar will be documented in this file.
 
+## [Unreleased]
+
+## [1.3.0-beta] - 2026-05-10
+
+i18n hygiene plus a new sister-file localization convention. Wires up Telar's existing language packs in places that previously hardcoded English, introduces a sister-file convention for localizing user pages, and refreshes the demo content to reflect current capabilities (multimedia, Telar Compositor, dual storytelling/collections framing).
+
+### Fixed
+
+- **Homepage headings rendered in English for Spanish users**: `_layouts/index.html` now resolves the stories and objects headings via `page.X | default: lang.pages.X | default: "<English literal>"`. Previously the layout dropped straight to the English literal when no `page.*` override was set, and the template's `index.md` shipped with English page-overrides that shadowed the i18n for every existing user with `telar_language: es`
+
+- **Empty-state messages and IIIF URL warning hardcoded in English**: `_layouts/index.html`, `_layouts/objects-index.html`, `_layouts/glossary-index.html`, and `_includes/iiif-url-warning.html` now reference `lang.empty_states.*` and `lang.errors.iiif_mismatch.*` keys that were already defined in both language files but never used. Spanish-language sites now show empty-state guidance and the IIIF mismatch troubleshooting modal in Spanish
+
+- **JS thumbnail fallback strings hardcoded in English**: `_layouts/index.html` and `_layouts/objects-index.html` now inject `TelarI18n` and `TelarI18nIIIF` constants from the lang values, so the "Failed to load" and "No image" placeholders displayed when a thumbnail fails appear in the site's active language
+
+- **Empty-state messages pointed at the wrong content directory**: empty-state guidance previously told users to add story/object/glossary files to `_stories/`, `_objects/`, or `_glossary/`. Those directories are auto-generated; the canonical user-content paths are under `telar-content/spreadsheets/` and `telar-content/texts/glossary/`. The lang values had the correct paths; wiring them up fixed both the i18n bug and the misleading guidance
+
+### Added
+
+- **Sister-file localization for user pages** (`telar-content/texts/pages/`): `scripts/generate_collections.py` now detects markdown files with frontmatter `localized_for: <canonical>.md` and `language: <code>`. When `site.telar_language` matches the sister's `language`, the build uses the sister's content but writes output under the canonical filename — so `/about/` resolves to the right language without URL duplication. The v1.3.0 template ships with `acerca.md` as the Spanish sister of `about.md`; users can add siblings for other languages following the same convention
+
+- **`lang.index_page.welcome`** key carrying the homepage welcome content as a multi-line markdown block scalar in both EN and ES. The default `index.md` body now renders `{{ lang.index_page.welcome | markdownify }}` with a bilingual EN/ES override comment explaining how site owners replace it with their own content
+
+- **`lang.pages.glossary_intro`** key for the glossary page intro sentence, paired with EN and ES values. `pages/glossary.md` body now references this key
+
+- **`lang.errors.iiif_mismatch.local_fix_check_config`** and **`local_fix_run_with_note`**: two missing keys completing the IIIF URL warning's local-development fallback section
+
+- **Migration script `v121_to_v130.py` and matching `migration.json` manifest**: conditional content cleanup that removes the three stale `index.md` frontmatter keys and replaces user-content bodies (welcome, glossary, objects, about) with the v1.3.0 lang-key templates only when a SHA-256 hash check confirms the file is byte-for-byte identical to the v1.2.1 default. Any user customisation preserves the file untouched. For sites with `telar_language: es` whose `about.md` is unchanged from the v1.2.1 default, the migration also creates `acerca.md` automatically so the site immediately renders Spanish content at `/about/`. Sites with a customised `about.md` skip this — otherwise the new sister file would shadow the customisation
+
+### Changed
+
+- **Default content of welcome and about pages refreshed** to reflect current Telar capabilities. Both now name both Telar modes (digital storytelling and publishing small digital collections), name multimedia coverage (IIIF images, video, audio, narrative text, contextual layers), present the three setup paths (Telar Compositor, GitHub template + Sheets, hands-on local), and link to the Telar Compositor. Previous content described Telar as it was around v0.7 (single-mode storytelling, GitHub template only, no audio/video, no Compositor)
+
+- **`pages/glossary.md`, `pages/objects.md`, `index.md`** rewritten to render via lang keys rather than hardcoded English. Each file carries a bilingual EN/ES HTML override comment explaining how to replace the default with custom content. The pattern uses `{% assign lang = site.data.languages[site.telar_language] | default: site.data.languages.en %}` at the top of the page (the layout's own `lang` assignment isn't visible to the page body, which Jekyll renders before wrapping in the layout)
+
+- **`telar-content/texts/pages/about.md`** rewritten with the refreshed copy plus a sentence in the Customize alert documenting the sister-file convention for site owners adding additional languages
+
+### Removed
+
+- **Stale `lang.pages.home_title` key** from both `en.yml` and `es.yml`. Defined since v1.0.0-beta but never referenced from any layout, include, or script
+
+## [1.2.1-beta] - 2026-05-08
+
+Patch release with a demo content fetch fix and project metadata additions.
+
+### Fixed
+
+- **Demo content fetch tolerates v-prefixed `telar.version`**: `scripts/fetch_demo_content.py` previously raised `ValueError` internally when `_config.yml` had a v-prefixed version string (e.g. `version: "v1.2.0"`) and silently built sites with no demo content. An earlier version of the Telar Compositor's upgrade flow wrote v-prefixed strings into some sites; the compositor was fixed, but historical bad values persisted in upgraded sites. The fetcher now strips a leading `v` (or `V`) when reading the version and again as defence-in-depth when parsing entries from the remote `versions.json` index. A new warning surfaces in the build log if a site version cannot be parsed for any other reason. Sites with stale v-prefixed values continue to work; the value can optionally be cleaned up to a bare numeric version
+
+### Added
+
+- **`CITATION.cff`** with author and ORCID metadata for academic citation
+- **Migration script `v120_to_v121.py`** and matching `migration.json` manifest for the demo content fetch fix
+
+### Changed
+
+- **Expanded `package.json` metadata** (`version`, `description`, `license`, `author`, `contributors`, `homepage`, `repository`, `bugs`) for clarity in the npm/GitHub ecosystem
+
+## [1.2.0] - 2026-04-16
+
+Story structure and UX improvements.
+
+### Added
+
+- **Section card table of contents**: Stories with `show_sections: yes` in project.csv display a navigable TOC on the title card, listing every section card as a clickable link. The title card uses the layer 2 panel background color when TOC is enabled. Add `mostrar_secciones: si` for Spanish-language sites
+
+- **Back to Start button**: The "Back to Home" button in the top-left corner now switches to "Back to Start" once readers scroll past the title card. Clicking it returns to the title card. On mobile, the button shows a contextual icon (home or up-arrow)
+
+- **In-story navigation**: New `navigateToStep()` and `navigateToIntro()` functions allow jumping between steps from within the story, used by the TOC links and the Back to Start button
+
+- **Migration manifest**: Each release now includes a machine-readable `migration.json` describing content transforms, attached as a GitHub Release asset. The Telar Compositor uses these manifests to upgrade sites through its web interface
+
+### Changed
+
+- **Story card placeholders**: Homepage thumbnails now show the first letter of the story title instead of an auto-generated ordinal number. Related story links on object pages show the title only
+
+### Fixed
+
+- **Deep link parent panel stacking**: Deep links to layer 2 panels (e.g. `#s3l2`) now correctly open layer 1 underneath, so all parent panels are visible when arriving via a shared link
+
+## [1.1.0] - 2026-04-12
+
+Structural and navigational features for richer storytelling.
+
+### Added
+
+- **Deep linking**: Share URLs that point to a specific step in a story, optionally with a panel layer open. The URL fragment updates silently as the reader scrolls, and shared links open directly at the right position
+
+- **Title cards**: Chapter heading cards that appear between story steps. Mark a step row with an empty object to create a title card — it displays styled heading text without a media viewer and participates fully in scroll, keyboard, and button navigation
+
+- **Collection mode**: Set `collection_mode: true` in `_config.yml` to flip the homepage to a collection-first layout with large object thumbnails and stories below. Default mode is unchanged
+
+- **Bibliography styling**: Use the `:::bibliography` widget block in panel markdown content to format references with hanging indent (first line flush, subsequent lines indented)
+
+- **Share panel "this view" tab**: The share panel now includes a tab that copies the current URL with the reader's exact position
+
+### Fixed
+
+- **Panel scroll**: Wheel events inside open panels are no longer intercepted by the scroll engine. Users can scroll panel content freely without the story advancing
+
+- **Keyboard navigation in panels**: Arrow keys, Page Up/Down, and Spacebar now scroll panel content when a panel is open, instead of navigating story steps
+
+- **Video/audio not paused on title cards**: Media players now properly deactivate when scrolling from a video or audio card into a title card, in both directions
+
+- **IIIF viewer background on object pages**: The Telar weave pattern now shows correctly behind the IIIF viewer on object pages, instead of Tify's default grey dot grid
+
+- **Audio object detection**: Audio objects are now correctly detected even without the `audiowaveform` system dependency, via a new audio manifest generated during the CSV-to-JSON pipeline
+
+- **ArrowRight on first step**: Fixed an issue where pressing ArrowRight immediately after arriving at step 1 from the intro could fail because the scroll animation briefly reset the step index
+
+### Changed
+
+- **Panel DOM attributes**: All panels now carry a `data-telar-panel` attribute for consistent selector targeting
+
 ## [1.0.0-beta] - 2026-03-25
 
 A new milestone.
