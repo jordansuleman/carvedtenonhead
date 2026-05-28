@@ -2,16 +2,18 @@
 # https://telar.org
 
 # Site Settings
-title: "Andean Carved Tenon Head"
-description: ""
+title: "Nazca Double-Spout Stirrup-Handle Vessel"
+description: "This website is a collection and deep dive into the Nazca Double-Spout Vessel. Here you can find first hand images taken by our group members and questions that our group members thought up about this object. This questions have 3 levels of answers to the question. Level 1 answers are very simple and basic, Level 2 goes deeper into the question, and Level 3 goes the deepest into the question. 
+
+We hope you enjoy the experience of this website. Thank you."
 url: "https://jordansuleman.github.io"
-baseurl: "/carvedtenonhead"
-author: "Jordan, Tanner, Elise"
-email: ""
+baseurl: "/AncientAndesPoterry"
+author: "Jordan, Rihanna, Ian, Victor, Jack"
+email: "jordansuleman@umail.ucsb.edu"
 telar_theme: "trama" # Options: trama, paisajes, neogranadina, santa-barbara, austin, or custom
 logo: ""
-telar_language: "en" # Options: "en" (English), "es" (Español)
-collection_mode: false  # Set to true to show objects first with large thumbnails and stories below with small thumbnails (collection-first homepage)
+telar_language: en
+collection_mode: true
 
 # Story Interface Settings
 story_interface:
@@ -30,7 +32,7 @@ collection_interface:
 # Story Protection (optional)
 # Stories with protected=yes in project.csv will be encrypted.
 # Viewers need this key to unlock protected stories.
-story_key: "test"
+story_key: 
 
 # Google Sheets Integration (optional)
 # Manage content via Google Sheets instead of editing CSV files directly.
@@ -157,4 +159,3 @@ development-features:
   # Use this when building a site with only custom pages (no stories or objects)
   # (Backward compatible: hide_collections also supported)
   skip_collections: false
-story_key: test
