@@ -15,5 +15,8 @@ title: Home
   Para reemplazarlo con el tuyo, borra la línea que sigue y escribe
   tu contenido de bienvenida aquí en markdown.
 -->
+Welcome to our Telar Page. Our Group has done a deep dive study on the 
+Nazca Double Spoutted Vessel over the past 10 weeks. We hope that you
+enjoy this online experience of this ancient artpiece.
 
 {{ lang.index_page.welcome | markdownify }}
